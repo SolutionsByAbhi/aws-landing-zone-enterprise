@@ -1,0 +1,25 @@
+name:  Terraform  Plan &  Apply
+
+on:
+   pull_request:
+       paths:
+           -  "infra/terraform/**"
+   workflow_dispatch:
+
+jobs:
+   terraform:
+       runs-on:  ubuntu-latest
+       defaults:
+          run:
+               working-directory: infra/terraform/global
+       steps:
+           -  uses:  actions/checkout@v4
+          -  uses:  hashicorp/setup-terraform@v3
+              with:
+                  terraform_version:  1.6.6
+          -  name:  Terraform  fmt
+              run:  terraform fmt  -check  -recursive
+           - name:  Terraform  init
+              run:  terraform  init
+          -  name:  Terraform  plan
+              run:  terraform  plan -input=false
